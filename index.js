@@ -4,6 +4,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 const app = express()
 const Person = require('./models/person')
+const mongoose = require('mongoose')
 
 app.use(cors())
 app.use(express.json())
@@ -71,8 +72,6 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
   const newPerson = request.body
-  const id = Math.round(Math.random() * 100000)
-  newPerson.id = id
 
   if (!newPerson.name) {
     return response.status(400).json({
@@ -82,14 +81,16 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({
       error: "number missing"
     })
-  } else if (persons.find(person => person.name === newPerson.name)) {
-    return response.status(400).json({
-      error: "name must be unique"
-    })
-  }
+  } 
 
-  persons = persons.concat(newPerson)
-  response.json(newPerson)
+  const person = new Person({
+    name: newPerson.name,
+    number: newPerson.number,
+  })
+
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
 
 const PORT = process.env.PORT
