@@ -77,11 +77,9 @@ app.post('/api/persons', (request, response, next) => {
 app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
 
-  const person = {
-    number: body.number
-  }
+  const person = { number: body.number }
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true })
     .then(updateNote => {
       response.json(updateNote.toJSON())
     })
