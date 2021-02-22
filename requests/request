@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# Functions
+
+getAllPersons() {
+  curl -X GET \
+    "$URL/api/persons"
+}
+
+addPerson() {
+  curl -X POST \
+    "$URL/api/persons" \
+    --header 'Content-Type: application/json' \
+    -d '
+      {
+        "name": "'"$newName"'",
+        "number": "'"$newNumber"'"
+      }'
+}
+
+deletePersonById() {
+  curl -X DELETE \
+    "$URL/api/persons/$id"
+}
+
+updatePersonById() {
+  curl -X PUT \
+    "$URL/api/persons/$id" \
+    --header 'Content-Type: application/json' \
+    -d '
+      {
+        "name": "'"$newName"'",
+        "number": "'"$newNumber"'"
+      }'
+}
+
+# Variables
+
+URL="http://localhost:3001"
+newName="Ann Rabeinsr"
+newNumber="1234-4567"
+id=""
+
+# Samples
+
+#getAllPersons | jq
+addPerson | jq
+#deletePersonById | jq
+#updatePersonById | jq
