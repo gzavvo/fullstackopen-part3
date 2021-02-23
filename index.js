@@ -4,13 +4,12 @@ const cors = require('cors')
 const morgan = require('morgan')
 const app = express()
 const Person = require('./models/person')
-const mongoose = require('mongoose')
 
 app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 
-morgan.token('content', function (req, res) {
+morgan.token('content', function (req) {
   return JSON.stringify(req.body)
 })
 
@@ -43,7 +42,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -54,13 +53,13 @@ app.post('/api/persons', (request, response, next) => {
 
   if (!newPerson.name) {
     return response.status(400).json({
-      error: "name missing"
+      error: 'name missing'
     })
   } else if (!newPerson.number) {
     return response.status(400).json({
-      error: "number missing"
+      error: 'number missing'
     })
-  } 
+  }
 
   const person = new Person({
     name: newPerson.name,
@@ -70,7 +69,7 @@ app.post('/api/persons', (request, response, next) => {
   person.save()
     .then(savedPerson => {
       response.json(savedPerson)
-  })
+    })
     .catch(error => next(error))
 })
 
